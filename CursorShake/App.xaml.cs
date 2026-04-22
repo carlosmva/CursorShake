@@ -20,11 +20,14 @@ namespace CursorShake
             {
                 base.OnStartup(e);
 
-                var iconPath = System.IO.Path.Combine(AppContext.BaseDirectory, "YourIcon.ico");
+                var iconPath = System.IO.Path.Combine(AppContext.BaseDirectory, "cursor.ico");
+                var trayIcon = System.IO.File.Exists(iconPath)
+                    ? new System.Drawing.Icon(iconPath)
+                    : System.Drawing.SystemIcons.Application;
 
                 _tray = new NotifyIcon
                 {
-                    Icon = System.Drawing.SystemIcons.Application,
+                    Icon = trayIcon,
                     Visible = true,
                     Text = "Cursor Shake"
                 };
@@ -57,8 +60,11 @@ namespace CursorShake
 
         protected override void OnExit(ExitEventArgs e)
         {
-            _tray.Visible = false;
-            _tray.Dispose();
+            if (_tray is { } t)
+            {
+                t.Visible = false;
+                t.Dispose();
+            }
             base.OnExit(e);
         }
     }

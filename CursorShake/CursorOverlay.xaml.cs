@@ -109,14 +109,17 @@ namespace CursorShake
             {
                 downTimer.Stop();
 
+                // Softer return than cubic: ease-in at the start of the shrink reads as a gentle settle.
+                var settleEase = new SineEase { EasingMode = EasingMode.EaseIn };
+
                 var downX = new DoubleAnimation(AnimPeakScale, 1, TimeSpan.FromMilliseconds(AnimScaleDownMs))
                 {
-                    EasingFunction = new CubicEase { EasingMode = EasingMode.EaseIn }
+                    EasingFunction = settleEase
                 };
 
                 var downY = new DoubleAnimation(AnimPeakScale, 1, TimeSpan.FromMilliseconds(AnimScaleDownMs))
                 {
-                    EasingFunction = new CubicEase { EasingMode = EasingMode.EaseIn }
+                    EasingFunction = settleEase
                 };
 
                 ScaleTf.BeginAnimation(System.Windows.Media.ScaleTransform.ScaleXProperty, downX);

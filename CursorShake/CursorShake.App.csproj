@@ -6,16 +6,12 @@
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
     <UseWPF>true</UseWPF>
-	<UseWindowsForms>true</UseWindowsForms>
-	<ApplicationIcon>Farm-Fresh_sword.ico</ApplicationIcon>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ApplicationIcon>cursor.ico</ApplicationIcon>
   </PropertyGroup>
 
   <ItemGroup>
-    <None Remove="Farm-Fresh_sword.ico" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Content Include="Farm-Fresh_sword.ico">
+    <Content Include="cursor.ico">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
@@ -23,12 +19,6 @@
   <ItemGroup>
     <ProjectReference Include="..\CursorShake.Core\CursorShake.Core.csproj" />
     <ProjectReference Include="..\CursorShake.Infrastructure\CursorShake.Infrastructure.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Resource Include="Farm-Fresh_sword.ico">
-      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
-    </Resource>
   </ItemGroup>
 
 </Project>
