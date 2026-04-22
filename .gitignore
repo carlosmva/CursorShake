@@ -51,3 +51,13 @@ $RECYCLE.BIN/
 *.temp
 *~
 *.swp
+
+.agents/skills/nothing-design/references/components.md
+
+.agents/skills/nothing-design/references/platform-mapping.md
+
+.agents/skills/nothing-design/references/tokens.md
+
+.agents/skills/nothing-design/SKILL.md
+
+skills-lock.json

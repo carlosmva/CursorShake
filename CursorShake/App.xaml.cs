@@ -10,15 +10,20 @@ namespace CursorShake
     public partial class App : Application
     {
         private NotifyIcon? _tray;
-        private MouseHook _hook = new();
-        private ShakeDetector _detector = new();
-        private CursorOverlay _overlay = new();
+        private SettingsWindow? _settings;
+        private readonly MouseHook _hook = new();
+        private readonly ShakeDetector _detector = new();
+        private CursorOverlay? _overlay;
 
         protected override void OnStartup(StartupEventArgs e)
         {
             try
             {
                 base.OnStartup(e);
+                AnimationSettingsStore.Load();
+
+                // Must create after WPF application start (not in a field initializer).
+                _overlay = new CursorOverlay();
 
                 var iconPath = System.IO.Path.Combine(AppContext.BaseDirectory, "cursor.ico");
                 var trayIcon = System.IO.File.Exists(iconPath)
@@ -33,7 +38,11 @@ namespace CursorShake
                 };
 
                 var menu = new ContextMenuStrip();
-                menu.Items.Add("Exit", null, (_, __) => Shutdown());
+                menu.Items.Add("Settings", null, (_, __) =>
+                {
+                    Current.Dispatcher.Invoke(OpenOrActivateSettings);
+                });
+                menu.Items.Add("Exit", null, (_, __) => Current.Dispatcher.Invoke(Shutdown));
                 _tray.ContextMenuStrip = menu;
 
                 _hook.OnMouseMove += (x, y) =>
@@ -45,7 +54,7 @@ namespace CursorShake
                 {
                     Current.Dispatcher.Invoke(async () =>
                     {
-                        await _overlay.ShowAnimated();
+                        if (_overlay is not null) await _overlay.ShowAnimated();
                     });
                 };
 
@@ -58,8 +67,21 @@ namespace CursorShake
             }
         }
 
+        private void OpenOrActivateSettings()
+        {
+            if (_settings is { IsVisible: true })
+            {
+                _settings.Activate();
+                return;
+            }
+            _settings = new SettingsWindow();
+            _settings.Closed += (_, __) => _settings = null;
+            _settings.Show();
+        }
+
         protected override void OnExit(ExitEventArgs e)
         {
+            _hook.Stop();
             if (_tray is { } t)
             {
                 t.Visible = false;

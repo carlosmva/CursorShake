@@ -1,0 +1,145 @@
+<Window x:Class="CursorShake.SettingsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title=""
+        WindowStyle="None"
+        AllowsTransparency="False"
+        ResizeMode="NoResize"
+        ShowInTaskbar="True"
+        SizeToContent="Height"
+        Width="420"
+        Background="#000000"
+        Foreground="#E8E8E8"
+        TextOptions.TextFormattingMode="Display"
+        TextOptions.TextRenderingMode="ClearType">
+  <!--
+    Nothing-inspired: OLED black, flat border, no shadow.
+    Google Fonts: Space Grotesk (body, headings), Space Mono (labels, buttons).
+    Add TTFs under Assets/Fonts and pack if system lacks these names.
+  -->
+  <Window.Resources>
+    <Style x:Key="NLabel" TargetType="TextBlock">
+      <Setter Property="FontFamily" Value="Space Mono, Consolas" />
+      <Setter Property="FontSize" Value="11" />
+      <Setter Property="Foreground" Value="#999999" />
+      <Setter Property="Margin" Value="0,0,0,6" />
+    </Style>
+  </Window.Resources>
+  <Border Background="#000000" BorderBrush="#333333" BorderThickness="1" Padding="0">
+    <Grid>
+      <Grid.RowDefinitions>
+        <RowDefinition Height="44" />
+        <RowDefinition Height="Auto" />
+        <RowDefinition Height="Auto" />
+      </Grid.RowDefinitions>
+      <Border Grid.Row="0"
+              Background="#111111"
+              BorderBrush="#333333"
+              BorderThickness="0,0,0,1"
+              MouseLeftButtonDown="TitleBar_OnMouseLeftButtonDown">
+        <Grid Margin="20,0,8,0">
+          <TextBlock VerticalAlignment="Center"
+                     FontFamily="Space Grotesk, Segoe UI"
+                     FontSize="11"
+                     Foreground="#999999"
+                     Text="CURSOR SHAKE" />
+          <Button HorizontalAlignment="Right"
+                  Width="32"
+                  Height="32"
+                  Background="Transparent"
+                  BorderBrush="#333333"
+                  BorderThickness="1"
+                  Click="Close_OnClick"
+                  Content="X"
+                  Cursor="Hand"
+                  FontFamily="Space Mono, Consolas"
+                  FontSize="11"
+                  Foreground="#666666" />
+        </Grid>
+      </Border>
+      <StackPanel x:Name="FormPanel" Grid.Row="1" Margin="32,28,32,0">
+        <TextBlock FontFamily="Space Grotesk, Segoe UI"
+                   FontSize="24"
+                   Foreground="#FFFFFF"
+                   Text="Tuning" />
+        <TextBlock Margin="0,4,0,20"
+                   FontFamily="Space Mono, Consolas"
+                   FontSize="11"
+                   Foreground="#666666"
+                   Text="SAVED TO APP DATA ON SAVE" />
+        <TextBlock x:Name="StatusLine"
+                   Margin="0,0,0,16"
+                   FontFamily="Space Mono, Consolas"
+                   FontSize="11"
+                   Foreground="#4A9E5C"
+                   TextWrapping="Wrap"
+                   Visibility="Collapsed" />
+        <TextBlock Text="PEAK SCALE" Style="{StaticResource NLabel}" />
+        <Grid Margin="0,0,0,16">
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="64" />
+          </Grid.ColumnDefinitions>
+          <Slider x:Name="SliderPeak" Grid.Column="0"
+                  Minimum="1.1" Maximum="3.5" TickFrequency="0.01"
+                  IsSnapToTickEnabled="False" />
+          <TextBlock x:Name="ValuePeak" Grid.Column="1"
+                     HorizontalAlignment="Right" VerticalAlignment="Center"
+                     FontFamily="Space Mono, Consolas" FontSize="12" Foreground="#E8E8E8" Text="0.00" />
+        </Grid>
+        <TextBlock Text="GROW (MS)" Style="{StaticResource NLabel}" />
+        <Grid Margin="0,0,0,16">
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="64" />
+          </Grid.ColumnDefinitions>
+          <Slider x:Name="SliderGrow" Grid.Column="0" Minimum="20" Maximum="500" IsSnapToTickEnabled="True" />
+          <TextBlock x:Name="ValueGrow" Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Center"
+                     FontFamily="Space Mono, Consolas" FontSize="12" Foreground="#E8E8E8" Text="0" />
+        </Grid>
+        <TextBlock Text="HOLD (MS)" Style="{StaticResource NLabel}" />
+        <Grid Margin="0,0,0,16">
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="64" />
+          </Grid.ColumnDefinitions>
+          <Slider x:Name="SliderHold" Grid.Column="0" Minimum="0" Maximum="500" IsSnapToTickEnabled="True" />
+          <TextBlock x:Name="ValueHold" Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Center"
+                     FontFamily="Space Mono, Consolas" FontSize="12" Foreground="#E8E8E8" Text="0" />
+        </Grid>
+        <TextBlock Text="SHRINK (MS)" Style="{StaticResource NLabel}" />
+        <Grid Margin="0,0,0,16">
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="64" />
+          </Grid.ColumnDefinitions>
+          <Slider x:Name="SliderShrink" Grid.Column="0" Minimum="20" Maximum="500" IsSnapToTickEnabled="True" />
+          <TextBlock x:Name="ValueShrink" Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Center"
+                     FontFamily="Space Mono, Consolas" FontSize="12" Foreground="#E8E8E8" Text="0" />
+        </Grid>
+        <TextBlock Text="END GAP (MS)" Style="{StaticResource NLabel}" />
+        <Grid Margin="0,0,0,8">
+          <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" />
+            <ColumnDefinition Width="64" />
+          </Grid.ColumnDefinitions>
+          <Slider x:Name="SliderEndPad" Grid.Column="0" Minimum="0" Maximum="200" IsSnapToTickEnabled="True" />
+          <TextBlock x:Name="ValueEndPad" Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Center"
+                     FontFamily="Space Mono, Consolas" FontSize="12" Foreground="#E8E8E8" Text="0" />
+        </Grid>
+      </StackPanel>
+      <StackPanel Grid.Row="2"
+                  Margin="32,8,32,24"
+                  HorizontalAlignment="Right"
+                  FlowDirection="RightToLeft"
+                  Orientation="Horizontal">
+        <Button x:Name="SaveButton" MinWidth="120" MinHeight="44" Margin="0,0,0,0" Padding="24,0"
+                Background="#FFFFFF" BorderThickness="0" Click="Save_OnClick" Content="SAVE" Cursor="Hand"
+                FontFamily="Space Mono, Consolas" FontSize="12" Foreground="#000000" />
+        <Button MinWidth="120" MinHeight="44" Margin="0,0,12,0" Padding="24,0" Background="Transparent"
+                BorderBrush="#333333" BorderThickness="1" Click="Close_OnClick" Content="CLOSE" Cursor="Hand"
+                FontFamily="Space Mono, Consolas" FontSize="12" Foreground="#999999" />
+      </StackPanel>
+    </Grid>
+  </Border>
+</Window>

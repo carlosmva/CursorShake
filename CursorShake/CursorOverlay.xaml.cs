@@ -8,17 +8,6 @@ namespace CursorShake
 {
     public partial class CursorOverlay : Window
     {
-        // One place to tune; total must match `await Task.Delay` in `ShowAnimated`.
-        // Hold: linger at max scale so the “pop” reads before the shrink.
-        private const int AnimScaleUpMs = 120;
-        private const int AnimHoldAtPeakMs = 80;
-        private const int AnimScaleDownMs = 180;
-        // Extra ms after the shrink finishes before hiding (was ~50ms with Delay(350)).
-        private const int AnimEndPadMs = 50;
-
-        // Max scale during the flash; window uses this so the enlarged cursor is not clipped.
-        private const double AnimPeakScale = 2.65;
-
         private readonly DispatcherTimer _followTimer;
         private int _hotspotX;
         private int _hotspotY;
@@ -39,6 +28,7 @@ namespace CursorShake
 
         public async Task ShowAnimated()
         {
+            var s = Clamped(AnimationSettingsStore.Current);
             var (bmp, hotspotX, hotspotY, x, y) = CursorHelper.GetCursor();
 
             CursorImage.Source = bmp;
@@ -48,8 +38,8 @@ namespace CursorShake
             _hotspotX = hotspotX;
             _hotspotY = hotspotY;
 
-            Width = Math.Max(256, bmp.Width * AnimPeakScale * 2);
-            Height = Math.Max(256, bmp.Height * AnimPeakScale * 2);
+            Width = Math.Max(256, bmp.Width * s.PeakScale * 2);
+            Height = Math.Max(256, bmp.Height * s.PeakScale * 2);
 
             _imageLeft = (Width - bmp.Width) / 2.0;
             _imageTop = (Height - bmp.Height) / 2.0;
@@ -62,10 +52,9 @@ namespace CursorShake
             Show();
             _followTimer.Start();
 
-            Animate();
+            Animate(s);
 
-            // Pop, optional hold, shrink, then a short beat before unhide
-            var totalMs = AnimScaleUpMs + AnimHoldAtPeakMs + AnimScaleDownMs + AnimEndPadMs;
+            var totalMs = s.ScaleUpMs + s.HoldAtPeakMs + s.ScaleDownMs + s.EndPadMs;
             await Task.Delay(totalMs);
 
             _followTimer.Stop();
@@ -83,16 +72,16 @@ namespace CursorShake
             Top = y - (_imageTop + _hotspotY);
         }
 
-        private void Animate()
+        private void Animate(AnimationSettings s)
         {
             var popEase = new QuinticEase { EasingMode = EasingMode.EaseOut };
 
-            var upX = new DoubleAnimation(1, AnimPeakScale, TimeSpan.FromMilliseconds(AnimScaleUpMs))
+            var upX = new DoubleAnimation(1, s.PeakScale, TimeSpan.FromMilliseconds(s.ScaleUpMs))
             {
                 EasingFunction = popEase
             };
 
-            var upY = new DoubleAnimation(1, AnimPeakScale, TimeSpan.FromMilliseconds(AnimScaleUpMs))
+            var upY = new DoubleAnimation(1, s.PeakScale, TimeSpan.FromMilliseconds(s.ScaleUpMs))
             {
                 EasingFunction = popEase
             };
@@ -100,24 +89,22 @@ namespace CursorShake
             ScaleTf.BeginAnimation(System.Windows.Media.ScaleTransform.ScaleXProperty, upX);
             ScaleTf.BeginAnimation(System.Windows.Media.ScaleTransform.ScaleYProperty, upY);
 
-            // Fire once scale-up is done, plus any hold (original: first tick = end of 120ms up).
             var downTimer = new DispatcherTimer
             {
-                Interval = TimeSpan.FromMilliseconds(AnimScaleUpMs + AnimHoldAtPeakMs)
+                Interval = TimeSpan.FromMilliseconds(s.ScaleUpMs + s.HoldAtPeakMs)
             };
             downTimer.Tick += (_, _) =>
             {
                 downTimer.Stop();
 
-                // Softer return than cubic: ease-in at the start of the shrink reads as a gentle settle.
                 var settleEase = new SineEase { EasingMode = EasingMode.EaseIn };
 
-                var downX = new DoubleAnimation(AnimPeakScale, 1, TimeSpan.FromMilliseconds(AnimScaleDownMs))
+                var downX = new DoubleAnimation(s.PeakScale, 1, TimeSpan.FromMilliseconds(s.ScaleDownMs))
                 {
                     EasingFunction = settleEase
                 };
 
-                var downY = new DoubleAnimation(AnimPeakScale, 1, TimeSpan.FromMilliseconds(AnimScaleDownMs))
+                var downY = new DoubleAnimation(s.PeakScale, 1, TimeSpan.FromMilliseconds(s.ScaleDownMs))
                 {
                     EasingFunction = settleEase
                 };
@@ -127,5 +114,15 @@ namespace CursorShake
             };
             downTimer.Start();
         }
+
+        private static AnimationSettings Clamped(AnimationSettings raw) =>
+            new()
+            {
+                PeakScale = Math.Round(Math.Clamp(raw.PeakScale, 1.05, 4.0), 2, MidpointRounding.AwayFromZero),
+                ScaleUpMs = (int)Math.Clamp(raw.ScaleUpMs, 20, 800),
+                HoldAtPeakMs = (int)Math.Clamp(raw.HoldAtPeakMs, 0, 800),
+                ScaleDownMs = (int)Math.Clamp(raw.ScaleDownMs, 20, 800),
+                EndPadMs = (int)Math.Clamp(raw.EndPadMs, 0, 500)
+            };
     }
 }
