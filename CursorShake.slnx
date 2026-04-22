@@ -1,0 +1,7 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="CursorShake.Core/CursorShake.Core.csproj" />
+    <Project Path="CursorShake.Infrastructure/CursorShake.Infrastructure.csproj" />
+    <Project Path="CursorShake/CursorShake.App.csproj" />
+  </Folder>
+</Solution>
