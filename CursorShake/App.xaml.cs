@@ -9,41 +9,50 @@ namespace CursorShake
 {
     public partial class App : Application
     {
-        private NotifyIcon _tray;
+        private NotifyIcon? _tray;
         private MouseHook _hook = new();
         private ShakeDetector _detector = new();
         private CursorOverlay _overlay = new();
 
         protected override void OnStartup(StartupEventArgs e)
         {
-            base.OnStartup(e);
-            var iconPath = System.IO.Path.Combine(AppContext.BaseDirectory, "Farm-Fresh_sword.ico");
-
-            _tray = new NotifyIcon
+            try
             {
-                Icon = new System.Drawing.Icon(iconPath),
-                Visible = true,
-                Text = "Cursor Shake"
-            };
+                base.OnStartup(e);
 
-            var menu = new ContextMenuStrip();
-            menu.Items.Add("Exit", null, (_, __) => Shutdown());
-            _tray.ContextMenuStrip = menu;
+                var iconPath = System.IO.Path.Combine(AppContext.BaseDirectory, "YourIcon.ico");
 
-            _hook.OnMouseMove += (x, y) =>
-            {
-                _detector.AddPoint(x, y);
-            };
-
-            _detector.OnShake += () =>
-            {
-                Current.Dispatcher.Invoke(async () =>
+                _tray = new NotifyIcon
                 {
-                    await _overlay.ShowAnimated();
-                });
-            };
+                    Icon = System.Drawing.SystemIcons.Application,
+                    Visible = true,
+                    Text = "Cursor Shake"
+                };
 
-            _hook.Start();
+                var menu = new ContextMenuStrip();
+                menu.Items.Add("Exit", null, (_, __) => Shutdown());
+                _tray.ContextMenuStrip = menu;
+
+                _hook.OnMouseMove += (x, y) =>
+                {
+                    _detector.AddPoint(x, y);
+                };
+
+                _detector.OnShake += () =>
+                {
+                    Current.Dispatcher.Invoke(async () =>
+                    {
+                        await _overlay.ShowAnimated();
+                    });
+                };
+
+                _hook.Start();
+            }
+            catch (Exception ex)
+            {
+                System.Windows.MessageBox.Show(ex.ToString(), "Startup error");
+                Shutdown();
+            }
         }
 
         protected override void OnExit(ExitEventArgs e)

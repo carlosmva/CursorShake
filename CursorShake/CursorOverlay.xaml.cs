@@ -8,6 +8,14 @@ namespace CursorShake
 {
     public partial class CursorOverlay : Window
     {
+        // One place to tune; total must match `await Task.Delay` in `ShowAnimated`.
+        // Hold is extra time *after* the pop before shrinking (0 = back-to-back with original).
+        private const int AnimScaleUpMs = 120;
+        private const int AnimHoldAtPeakMs = 0;
+        private const int AnimScaleDownMs = 180;
+        // Extra ms after the shrink finishes before hiding (was ~50ms with Delay(350)).
+        private const int AnimEndPadMs = 50;
+
         private readonly DispatcherTimer _followTimer;
         private int _hotspotX;
         private int _hotspotY;
@@ -55,7 +63,9 @@ namespace CursorShake
 
             Animate();
 
-            await Task.Delay(350);
+            // Pop, optional hold, shrink, then a short beat before unhide
+            var totalMs = AnimScaleUpMs + AnimHoldAtPeakMs + AnimScaleDownMs + AnimEndPadMs;
+            await Task.Delay(totalMs);
 
             _followTimer.Stop();
             Hide();
@@ -74,12 +84,12 @@ namespace CursorShake
 
         private void Animate()
         {
-            var upX = new DoubleAnimation(1, 2.5, TimeSpan.FromMilliseconds(120))
+            var upX = new DoubleAnimation(1, 2.5, TimeSpan.FromMilliseconds(AnimScaleUpMs))
             {
                 EasingFunction = new CubicEase { EasingMode = EasingMode.EaseOut }
             };
 
-            var upY = new DoubleAnimation(1, 2.5, TimeSpan.FromMilliseconds(120))
+            var upY = new DoubleAnimation(1, 2.5, TimeSpan.FromMilliseconds(AnimScaleUpMs))
             {
                 EasingFunction = new CubicEase { EasingMode = EasingMode.EaseOut }
             };
@@ -87,17 +97,21 @@ namespace CursorShake
             ScaleTf.BeginAnimation(System.Windows.Media.ScaleTransform.ScaleXProperty, upX);
             ScaleTf.BeginAnimation(System.Windows.Media.ScaleTransform.ScaleYProperty, upY);
 
-            var downTimer = new DispatcherTimer { Interval = TimeSpan.FromMilliseconds(120) };
+            // Fire once scale-up is done, plus any hold (original: first tick = end of 120ms up).
+            var downTimer = new DispatcherTimer
+            {
+                Interval = TimeSpan.FromMilliseconds(AnimScaleUpMs + AnimHoldAtPeakMs)
+            };
             downTimer.Tick += (_, _) =>
             {
                 downTimer.Stop();
 
-                var downX = new DoubleAnimation(2.5, 1, TimeSpan.FromMilliseconds(180))
+                var downX = new DoubleAnimation(2.5, 1, TimeSpan.FromMilliseconds(AnimScaleDownMs))
                 {
                     EasingFunction = new CubicEase { EasingMode = EasingMode.EaseIn }
                 };
 
-                var downY = new DoubleAnimation(2.5, 1, TimeSpan.FromMilliseconds(180))
+                var downY = new DoubleAnimation(2.5, 1, TimeSpan.FromMilliseconds(AnimScaleDownMs))
                 {
                     EasingFunction = new CubicEase { EasingMode = EasingMode.EaseIn }
                 };
