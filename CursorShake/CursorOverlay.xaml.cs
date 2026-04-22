@@ -16,6 +16,9 @@ namespace CursorShake
         // Extra ms after the shrink finishes before hiding (was ~50ms with Delay(350)).
         private const int AnimEndPadMs = 50;
 
+        // Max scale during the flash; window uses this so the enlarged cursor is not clipped.
+        private const double AnimPeakScale = 2.65;
+
         private readonly DispatcherTimer _followTimer;
         private int _hotspotX;
         private int _hotspotY;
@@ -45,10 +48,8 @@ namespace CursorShake
             _hotspotX = hotspotX;
             _hotspotY = hotspotY;
 
-            const double scale = 2.5;
-
-            Width = Math.Max(256, bmp.Width * scale * 2);
-            Height = Math.Max(256, bmp.Height * scale * 2);
+            Width = Math.Max(256, bmp.Width * AnimPeakScale * 2);
+            Height = Math.Max(256, bmp.Height * AnimPeakScale * 2);
 
             _imageLeft = (Width - bmp.Width) / 2.0;
             _imageTop = (Height - bmp.Height) / 2.0;
@@ -84,14 +85,16 @@ namespace CursorShake
 
         private void Animate()
         {
-            var upX = new DoubleAnimation(1, 2.5, TimeSpan.FromMilliseconds(AnimScaleUpMs))
+            var popEase = new QuinticEase { EasingMode = EasingMode.EaseOut };
+
+            var upX = new DoubleAnimation(1, AnimPeakScale, TimeSpan.FromMilliseconds(AnimScaleUpMs))
             {
-                EasingFunction = new CubicEase { EasingMode = EasingMode.EaseOut }
+                EasingFunction = popEase
             };
 
-            var upY = new DoubleAnimation(1, 2.5, TimeSpan.FromMilliseconds(AnimScaleUpMs))
+            var upY = new DoubleAnimation(1, AnimPeakScale, TimeSpan.FromMilliseconds(AnimScaleUpMs))
             {
-                EasingFunction = new CubicEase { EasingMode = EasingMode.EaseOut }
+                EasingFunction = popEase
             };
 
             ScaleTf.BeginAnimation(System.Windows.Media.ScaleTransform.ScaleXProperty, upX);
@@ -106,12 +109,12 @@ namespace CursorShake
             {
                 downTimer.Stop();
 
-                var downX = new DoubleAnimation(2.5, 1, TimeSpan.FromMilliseconds(AnimScaleDownMs))
+                var downX = new DoubleAnimation(AnimPeakScale, 1, TimeSpan.FromMilliseconds(AnimScaleDownMs))
                 {
                     EasingFunction = new CubicEase { EasingMode = EasingMode.EaseIn }
                 };
 
-                var downY = new DoubleAnimation(2.5, 1, TimeSpan.FromMilliseconds(AnimScaleDownMs))
+                var downY = new DoubleAnimation(AnimPeakScale, 1, TimeSpan.FromMilliseconds(AnimScaleDownMs))
                 {
                     EasingFunction = new CubicEase { EasingMode = EasingMode.EaseIn }
                 };
