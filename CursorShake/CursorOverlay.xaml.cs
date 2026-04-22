@@ -9,9 +9,9 @@ namespace CursorShake
     public partial class CursorOverlay : Window
     {
         // One place to tune; total must match `await Task.Delay` in `ShowAnimated`.
-        // Hold is extra time *after* the pop before shrinking (0 = back-to-back with original).
+        // Hold: linger at max scale so the “pop” reads before the shrink.
         private const int AnimScaleUpMs = 120;
-        private const int AnimHoldAtPeakMs = 0;
+        private const int AnimHoldAtPeakMs = 80;
         private const int AnimScaleDownMs = 180;
         // Extra ms after the shrink finishes before hiding (was ~50ms with Delay(350)).
         private const int AnimEndPadMs = 50;
