@@ -2,6 +2,8 @@
 
 Windows tray utility that detects a **vigorous horizontal mouse shake** and briefly shows an enlarged copy of the current cursor as visual feedback. Animation timing and scale are adjustable from a **Settings** window.
 
+![Cursor Shake demo](images/CursorShake.gif)
+
 ![Tuning — animation settings](images/cursor-shake-tuning.png)
 
 ## Requirements
