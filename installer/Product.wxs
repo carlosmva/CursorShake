@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Per-user (current user, no UAC) MSIX-style layout under %LocalAppData%\Programs\CursorShake -->
+<!-- File Source paths are anchored to this .wxs file (the installer/ folder), so
+     `wix build installer\Product.wxs` works without -d. Edit paths here if your publish output moves. -->
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+  <Package Name="Cursor Shake"
+           Manufacturer="Northeastern Software Services LLC"
+           Version="1.0.0.0"
+           ProductCode="*"
+           UpgradeCode="A3B0C1D2-E4F5-4A6B-8C9D-0E1F2A3B4C5D"
+           Language="1033"
+           Scope="perUser"
+           InstallerVersion="500"
+           ShortNames="no">
+    <MajorUpgrade DowngradeErrorMessage="A newer version of Cursor Shake is already installed."
+                  AllowDowngrades="no"
+                  AllowSameVersionUpgrades="yes" />
+    <MediaTemplate EmbedCab="true" />
+    <Icon Id="AppIcon" SourceFile="$(sys.SOURCEFILEDIR)..\CursorShake\bin\Release\net10.0-windows\win-x64\publish\cursor.ico" />
+    <Property Id="ARPPRODUCTICON" Value="AppIcon" />
+
+    <Feature Id="Main" Title="Cursor Shake" Description="Cursor shake visual feedback" Level="1" Display="expand">
+      <ComponentGroupRef Id="AppComponents" />
+      <ComponentGroupRef Id="UserProfileCleanup" />
+      <ComponentGroupRef Id="ShortcutComponents" />
+    </Feature>
+  </Package>
+
+  <Fragment>
+    <!-- %LocalAppData%\Programs\CursorShake (per user, no elevation) -->
+    <StandardDirectory Id="LocalAppDataFolder">
+      <Directory Name="Programs" Id="LocalPrograms">
+        <Directory Id="INSTALLFOLDER" Name="CursorShake" />
+      </Directory>
+    </StandardDirectory>
+    <StandardDirectory Id="ProgramMenuFolder">
+      <Directory Id="AppShortcutFolder" Name="Cursor Shake" />
+    </StandardDirectory>
+  </Fragment>
+
+  <Fragment>
+    <!-- Per-user (Scope=perUser): ICE38 — KeyPath must be HKCU registry, not a file. -->
+    <ComponentGroup Id="AppComponents" Directory="INSTALLFOLDER">
+      <Component Id="cmpPayload" Guid="A5B4C3D2-E1F0-4A5B-9C8D-7E6F5A4B3C2D">
+        <RegistryValue Id="regInstallPath" Root="HKCU"
+          Key="Software\Northeastern Software Services LLC\CursorShake"
+          Name="InstallPath" Type="string" Value="[INSTALLFOLDER]" KeyPath="yes" />
+        <File Id="filExe" Name="CursorShake.App.exe" Source="$(sys.SOURCEFILEDIR)..\CursorShake\bin\Release\net10.0-windows\win-x64\publish\CursorShake.App.exe" />
+        <File Id="filIco" Name="cursor.ico" Source="$(sys.SOURCEFILEDIR)..\CursorShake\bin\Release\net10.0-windows\win-x64\publish\cursor.ico" />
+        <File Name="D3DCompiler_47_cor3.dll" Source="$(sys.SOURCEFILEDIR)..\CursorShake\bin\Release\net10.0-windows\win-x64\publish\D3DCompiler_47_cor3.dll" />
+        <File Name="PenImc_cor3.dll" Source="$(sys.SOURCEFILEDIR)..\CursorShake\bin\Release\net10.0-windows\win-x64\publish\PenImc_cor3.dll" />
+        <File Name="PresentationNative_cor3.dll" Source="$(sys.SOURCEFILEDIR)..\CursorShake\bin\Release\net10.0-windows\win-x64\publish\PresentationNative_cor3.dll" />
+        <File Name="vcruntime140_cor3.dll" Source="$(sys.SOURCEFILEDIR)..\CursorShake\bin\Release\net10.0-windows\win-x64\publish\vcruntime140_cor3.dll" />
+        <File Name="wpfgfx_cor3.dll" Source="$(sys.SOURCEFILEDIR)..\CursorShake\bin\Release\net10.0-windows\win-x64\publish\wpfgfx_cor3.dll" />
+        <RemoveFolder Id="RemoveINSTALLFOLDER" On="uninstall" />
+      </Component>
+    </ComponentGroup>
+  </Fragment>
+
+  <Fragment>
+    <!-- ICE64: user-profile parent dirs need RemoveFolder entries. -->
+    <ComponentGroup Id="UserProfileCleanup" Directory="LocalPrograms">
+      <Component Id="cmpLocalPrograms" Guid="D7E8F9A0-B1C2-4D3E-8F4A-5B6C7D8E9F0A">
+        <RegistryValue Id="regProgramsStub" Root="HKCU"
+          Key="Software\Northeastern Software Services LLC\CursorShake\Layout"
+          Name="UserPrograms" Type="string" Value="1" KeyPath="yes" />
+        <RemoveFolder Id="RemoveLocalPrograms" On="uninstall" />
+      </Component>
+    </ComponentGroup>
+  </Fragment>
+
+  <Fragment>
+    <ComponentGroup Id="ShortcutComponents" Directory="AppShortcutFolder">
+      <Component Id="cmpShortcut" Guid="B6C5D4E3-F2A1-4B6C-8D9E-0F1A2B3C4D5E">
+        <RegistryValue Id="regShortcut" Root="HKCU"
+          Key="Software\Northeastern Software Services LLC\CursorShake\StartMenu"
+          Type="string" Name="Created" Value="1" KeyPath="yes" />
+        <Shortcut Name="Cursor Shake"
+          Target="[INSTALLFOLDER]CursorShake.App.exe"
+          WorkingDirectory="INSTALLFOLDER"
+          Icon="AppIcon" />
+        <RemoveFolder Id="RemoveShortcutDir" On="uninstall" />
+        <CreateFolder />
+      </Component>
+    </ComponentGroup>
+  </Fragment>
+</Wix>

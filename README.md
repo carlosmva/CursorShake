@@ -9,6 +9,10 @@ Windows tray utility that detects a **vigorous horizontal mouse shake** and brie
 - **Windows** (uses a low-level mouse hook and a transparent WPF overlay)
 - [.NET 10](https://dotnet.microsoft.com/download) (SDK to build and run)
 
+## Install from Releases
+
+The **MSI** in this repository’s **GitHub Releases** is a **simple Windows Installer** package. It installs the app **for the current user only** (per-user scope): no administrator elevation is required for a normal install, and files go under your user profile (for example `%LocalAppData%\Programs\CursorShake`). Uninstall it like any other app from **Settings → Apps** or **Apps & features**.
+
 ## Run
 
 From the repository root:
@@ -48,3 +52,7 @@ Move the mouse **quickly left and right** several times with enough horizontal t
 ```powershell
 dotnet build CursorShake.slnx
 ```
+
+## Support
+
+If you find this project useful, you can [buy me a coffee](https://buymeacoffee.com/carlosx).

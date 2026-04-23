@@ -2,8 +2,14 @@
 [Bb]in/
 [Oo]bj/
 [Oo]ut/
+[Bb]uild/
+[Dd]ist/
 [Ll]og/
 [Ll]ogs/
+
+## Windows installer (WiX / MSI)
+*.msi
+*.wixpdb
 
 ## Visual Studio / VS Code
 .vs/
