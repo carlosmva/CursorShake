@@ -6,11 +6,11 @@ namespace CursorShake;
 
 public sealed class AnimationSettings
 {
-    public double PeakScale { get; set; } = 2.65;
-    public int ScaleUpMs { get; set; } = 120;
-    public int HoldAtPeakMs { get; set; } = 80;
-    public int ScaleDownMs { get; set; } = 180;
-    public int EndPadMs { get; set; } = 50;
+    public double PeakScale { get; set; } = 3.19;
+    public int ScaleUpMs { get; set; } = 247;
+    public int HoldAtPeakMs { get; set; } = 108;
+    public int ScaleDownMs { get; set; } = 225;
+    public int EndPadMs { get; set; } = 93;
 }
 
 public static class AnimationSettingsStore

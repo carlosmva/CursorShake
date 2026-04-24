@@ -46,12 +46,13 @@
           Key="Software\Northeastern Software Services LLC\CursorShake"
           Name="InstallPath" Type="string" Value="[INSTALLFOLDER]" KeyPath="yes" />
         <File Id="filExe" Name="CursorShake.App.exe" Source="$(sys.SOURCEFILEDIR)..\CursorShake\bin\Release\net10.0-windows\win-x64\publish\CursorShake.App.exe" />
+        <File Id="filAppDll" Name="CursorShake.App.dll" Source="$(sys.SOURCEFILEDIR)..\CursorShake\bin\Release\net10.0-windows\win-x64\publish\CursorShake.App.dll" />
+        <File Id="filDeps" Name="CursorShake.App.deps.json" Source="$(sys.SOURCEFILEDIR)..\CursorShake\bin\Release\net10.0-windows\win-x64\publish\CursorShake.App.deps.json" />
+        <File Id="filRtCfg" Name="CursorShake.App.runtimeconfig.json" Source="$(sys.SOURCEFILEDIR)..\CursorShake\bin\Release\net10.0-windows\win-x64\publish\CursorShake.App.runtimeconfig.json" />
+        <File Id="filCoreDll" Name="CursorShake.Core.dll" Source="$(sys.SOURCEFILEDIR)..\CursorShake\bin\Release\net10.0-windows\win-x64\publish\CursorShake.Core.dll" />
+        <File Id="filInfraDll" Name="CursorShake.Infrastructure.dll" Source="$(sys.SOURCEFILEDIR)..\CursorShake\bin\Release\net10.0-windows\win-x64\publish\CursorShake.Infrastructure.dll" />
         <File Id="filIco" Name="cursor.ico" Source="$(sys.SOURCEFILEDIR)..\CursorShake\bin\Release\net10.0-windows\win-x64\publish\cursor.ico" />
-        <File Name="D3DCompiler_47_cor3.dll" Source="$(sys.SOURCEFILEDIR)..\CursorShake\bin\Release\net10.0-windows\win-x64\publish\D3DCompiler_47_cor3.dll" />
-        <File Name="PenImc_cor3.dll" Source="$(sys.SOURCEFILEDIR)..\CursorShake\bin\Release\net10.0-windows\win-x64\publish\PenImc_cor3.dll" />
-        <File Name="PresentationNative_cor3.dll" Source="$(sys.SOURCEFILEDIR)..\CursorShake\bin\Release\net10.0-windows\win-x64\publish\PresentationNative_cor3.dll" />
-        <File Name="vcruntime140_cor3.dll" Source="$(sys.SOURCEFILEDIR)..\CursorShake\bin\Release\net10.0-windows\win-x64\publish\vcruntime140_cor3.dll" />
-        <File Name="wpfgfx_cor3.dll" Source="$(sys.SOURCEFILEDIR)..\CursorShake\bin\Release\net10.0-windows\win-x64\publish\wpfgfx_cor3.dll" />
+        <!-- WPF native payloads ship with the shared .NET Desktop runtime; framework-dependent publish no longer copies *_cor3.dll into this folder. -->
         <RemoveFolder Id="RemoveINSTALLFOLDER" On="uninstall" />
       </Component>
     </ComponentGroup>
