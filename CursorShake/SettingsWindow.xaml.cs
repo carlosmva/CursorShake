@@ -39,7 +39,9 @@ public partial class SettingsWindow
             ScaleUpMs = (int)Math.Clamp(SliderGrow.Value, 20, 800),
             HoldAtPeakMs = (int)Math.Clamp(SliderHold.Value, 0, 800),
             ScaleDownMs = (int)Math.Clamp(SliderShrink.Value, 20, 800),
-            EndPadMs = (int)Math.Clamp(SliderEndPad.Value, 0, 500)
+            EndPadMs = (int)Math.Clamp(SliderEndPad.Value, 0, 500),
+            ScreenshotBorder = ChkScreenshotBorder.IsChecked == true,
+            ScreenshotShadow = ChkScreenshotShadow.IsChecked == true
         };
         AnimationSettingsStore.Save();
         StatusLine.Text = "[SAVED]";
@@ -59,6 +61,8 @@ public partial class SettingsWindow
         ValueHold.Text = s.HoldAtPeakMs.ToString();
         ValueShrink.Text = s.ScaleDownMs.ToString();
         ValueEndPad.Text = s.EndPadMs.ToString();
+        ChkScreenshotBorder.IsChecked = s.ScreenshotBorder;
+        ChkScreenshotShadow.IsChecked = s.ScreenshotShadow;
         StatusLine.Visibility = Visibility.Collapsed;
     }
 }

@@ -11,6 +11,12 @@ public sealed class AnimationSettings
     public int HoldAtPeakMs { get; set; } = 108;
     public int ScaleDownMs { get; set; } = 225;
     public int EndPadMs { get; set; } = 93;
+
+    /// <summary>When true, clipboard screenshots get a thin neutral border.</summary>
+    public bool ScreenshotBorder { get; set; }
+
+    /// <summary>When true, clipboard screenshots get a soft drop shadow (white mat behind the capture).</summary>
+    public bool ScreenshotShadow { get; set; }
 }
 
 public static class AnimationSettingsStore

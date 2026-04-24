@@ -1,0 +1,141 @@
+<Window x:Class="CursorShake.AnnotationDockWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title=""
+        WindowStyle="None"
+        AllowsTransparency="True"
+        Background="Transparent"
+        Topmost="True"
+        ShowInTaskbar="False"
+        ResizeMode="NoResize"
+        WindowStartupLocation="Manual"
+        Focusable="False"
+        TextOptions.TextFormattingMode="Display"
+        TextOptions.TextRenderingMode="ClearType">
+  <Window.Resources>
+    <Style x:Key="AnnToolBtn" TargetType="Button">
+      <Setter Property="FontFamily" Value="Space Mono, Consolas" />
+      <Setter Property="FontSize" Value="11" />
+      <Setter Property="Foreground" Value="#999999" />
+      <Setter Property="Background" Value="Transparent" />
+      <Setter Property="BorderBrush" Value="#333333" />
+      <Setter Property="BorderThickness" Value="1" />
+      <Setter Property="Padding" Value="14,8" />
+      <Setter Property="Cursor" Value="Hand" />
+      <Setter Property="Template">
+        <Setter.Value>
+          <ControlTemplate TargetType="Button">
+            <Border Background="{TemplateBinding Background}"
+                    BorderBrush="{TemplateBinding BorderBrush}"
+                    BorderThickness="{TemplateBinding BorderThickness}"
+                    Padding="{TemplateBinding Padding}"
+                    CornerRadius="4">
+              <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+            </Border>
+          </ControlTemplate>
+        </Setter.Value>
+      </Setter>
+      <Style.Triggers>
+        <Trigger Property="IsMouseOver" Value="True">
+          <Setter Property="Foreground" Value="#E8E8E8" />
+          <Setter Property="BorderBrush" Value="#666666" />
+        </Trigger>
+      </Style.Triggers>
+    </Style>
+    <Style x:Key="PrtMenuItem" TargetType="Button" BasedOn="{StaticResource AnnToolBtn}">
+      <Setter Property="HorizontalAlignment" Value="Stretch" />
+      <Setter Property="HorizontalContentAlignment" Value="Left" />
+      <Setter Property="Padding" Value="12,10" />
+    </Style>
+  </Window.Resources>
+  <Border x:Name="RootBorder"
+          Background="#99000000"
+          BorderBrush="#333333"
+          BorderThickness="0,0,0,1"
+          MouseEnter="RootBorder_OnMouseEnter"
+          MouseLeave="RootBorder_OnMouseLeave">
+    <Grid>
+      <Grid.RowDefinitions>
+        <RowDefinition Height="5" />
+        <RowDefinition Height="Auto" />
+      </Grid.RowDefinitions>
+      <Rectangle Grid.Row="0"
+                 Fill="#333333"
+                 Opacity="0.65"
+                 HorizontalAlignment="Stretch"
+                 VerticalAlignment="Stretch" />
+      <Border x:Name="ToolbarHost"
+              Grid.Row="1"
+              Background="#111111"
+              BorderBrush="#333333"
+              BorderThickness="0,1,0,0"
+              Padding="10,8,10,8"
+              Visibility="Collapsed">
+        <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+          <Button Content="LINE"
+                  Style="{StaticResource AnnToolBtn}"
+                  Click="Line_OnClick" />
+          <Button Content="ARROW"
+                  Style="{StaticResource AnnToolBtn}"
+                  Margin="8,0,0,0"
+                  Click="Arrow_OnClick" />
+          <Button Content="RECT"
+                  Style="{StaticResource AnnToolBtn}"
+                  Margin="8,0,0,0"
+                  Click="Rect_OnClick" />
+          <Button Content="TEXT"
+                  Style="{StaticResource AnnToolBtn}"
+                  Margin="8,0,0,0"
+                  Click="Text_OnClick" />
+          <Rectangle Width="1"
+                     Height="24"
+                     Margin="16,0,16,0"
+                     Fill="#333333"
+                     VerticalAlignment="Center" />
+          <Grid VerticalAlignment="Center">
+            <Button x:Name="BtnPrt"
+                    HorizontalAlignment="Left"
+                    Content="PRT"
+                    Style="{StaticResource AnnToolBtn}"
+                    ToolTip="Click: copy full monitor. Hover for region, previous region, or monitor."
+                    Click="BtnPrt_OnClick"
+                    MouseEnter="BtnPrt_OnMouseEnter"
+                    MouseLeave="BtnPrt_OnMouseLeave" />
+            <Popup x:Name="PrtMenuPopup"
+                   PlacementTarget="{Binding ElementName=BtnPrt}"
+                   Placement="Bottom"
+                   VerticalOffset="-2"
+                   AllowsTransparency="True"
+                   StaysOpen="True">
+              <Border x:Name="PrtMenuPanel"
+                      Background="#111111"
+                      BorderBrush="#333333"
+                      BorderThickness="1"
+                      Padding="6"
+                      MinWidth="220"
+                      MouseEnter="PrtMenuPanel_OnMouseEnter"
+                      MouseLeave="PrtMenuPanel_OnMouseLeave">
+                <StackPanel>
+                  <Button x:Name="PrtMenuRegion"
+                          Content="REGION"
+                          Style="{StaticResource PrtMenuItem}"
+                          Click="PrtMenuRegion_OnClick" />
+                  <Button x:Name="PrtMenuPrev"
+                          Content="PREVIOUS REGION"
+                          Style="{StaticResource PrtMenuItem}"
+                          Margin="0,6,0,0"
+                          Click="PrtMenuPrev_OnClick" />
+                  <Button x:Name="PrtMenuMonitor"
+                          Content="MONITOR"
+                          Style="{StaticResource PrtMenuItem}"
+                          Margin="0,6,0,0"
+                          Click="PrtMenuMonitor_OnClick" />
+                </StackPanel>
+              </Border>
+            </Popup>
+          </Grid>
+        </StackPanel>
+      </Border>
+    </Grid>
+  </Border>
+</Window>

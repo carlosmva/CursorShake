@@ -24,6 +24,42 @@
       <Setter Property="Foreground" Value="#999999" />
       <Setter Property="Margin" Value="0,0,0,6" />
     </Style>
+    <Style x:Key="NothingCheckBox" TargetType="CheckBox">
+      <Setter Property="Foreground" Value="#FFFFFF" />
+      <Setter Property="Background" Value="Transparent" />
+      <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+      <Setter Property="Template">
+        <Setter.Value>
+          <ControlTemplate TargetType="CheckBox">
+            <StackPanel Orientation="Horizontal">
+              <Border x:Name="Box"
+                      Width="14"
+                      Height="14"
+                      Margin="0,1,10,0"
+                      VerticalAlignment="Center"
+                      Background="#111111"
+                      BorderBrush="#666666"
+                      BorderThickness="1">
+                <Path x:Name="CheckMark"
+                      Data="M 2,6 L 5,9 L 10,2"
+                      Stroke="#FFFFFF"
+                      StrokeThickness="1.6"
+                      StrokeStartLineCap="Round"
+                      StrokeEndLineCap="Round"
+                      StrokeLineJoin="Round"
+                      Visibility="Collapsed" />
+              </Border>
+              <ContentPresenter VerticalAlignment="Center" RecognizesAccessKey="True" />
+            </StackPanel>
+            <ControlTemplate.Triggers>
+              <Trigger Property="IsChecked" Value="True">
+                <Setter TargetName="CheckMark" Property="Visibility" Value="Visible" />
+              </Trigger>
+            </ControlTemplate.Triggers>
+          </ControlTemplate>
+        </Setter.Value>
+      </Setter>
+    </Style>
   </Window.Resources>
   <Border Background="#000000" BorderBrush="#333333" BorderThickness="1" Padding="0">
     <Grid>
@@ -127,6 +163,21 @@
           <TextBlock x:Name="ValueEndPad" Grid.Column="1" HorizontalAlignment="Right" VerticalAlignment="Center"
                      FontFamily="Space Mono, Consolas" FontSize="12" Foreground="#E8E8E8" Text="0" />
         </Grid>
+        <TextBlock Margin="0,20,0,0"
+                   Text="SCREENSHOT (CLIPBOARD)"
+                   Style="{StaticResource NLabel}" />
+        <CheckBox x:Name="ChkScreenshotBorder"
+                  Margin="0,0,0,10"
+                  Style="{StaticResource NothingCheckBox}"
+                  Content="Border around capture"
+                  FontFamily="Space Mono, Consolas"
+                  FontSize="11" />
+        <CheckBox x:Name="ChkScreenshotShadow"
+                  Margin="0,0,0,8"
+                  Style="{StaticResource NothingCheckBox}"
+                  Content="Drop shadow (white mat)"
+                  FontFamily="Space Mono, Consolas"
+                  FontSize="11" />
       </StackPanel>
       <StackPanel Grid.Row="2"
                   Margin="32,8,32,24"
