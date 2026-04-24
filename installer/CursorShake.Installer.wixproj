@@ -4,7 +4,7 @@
     <AcceptEula>wix7</AcceptEula>
     <OutputName>CursorShake-Setup</OutputName>
     <OutputType>Package</OutputType>
-    <Version>1.0.0</Version>
+    <Version>1.1.0</Version>
     <!-- Payload paths live in Product.wxs (relative to installer/); keep publish output there before build. -->
   </PropertyGroup>
   <!-- SDK already compiles all *.wxs; do not list Product.wxs again (duplicate = WIX0089). -->

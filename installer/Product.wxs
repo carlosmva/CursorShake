@@ -5,7 +5,7 @@
 <Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
   <Package Name="Cursor Shake"
            Manufacturer="Northeastern Software Services LLC"
-           Version="1.0.0.0"
+           Version="1.1.0.0"
            ProductCode="*"
            UpgradeCode="A3B0C1D2-E4F5-4A6B-8C9D-0E1F2A3B4C5D"
            Language="1033"
